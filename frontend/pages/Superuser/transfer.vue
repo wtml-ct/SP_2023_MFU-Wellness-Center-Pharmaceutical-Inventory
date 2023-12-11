@@ -126,7 +126,7 @@
                         <v-card-actions class="mt-2">
                             <v-spacer></v-spacer>
                             <v-btn color="primary" text style="width: 100px" @click="dialogAccept = false">ยกเลิก</v-btn>
-                            <v-btn color="primary" rounded style="width: 150px" type="submit" @click="submitAccept()">ยืนยันการรับเข้า</v-btn>
+                            <v-btn color="primary" rounded style="width: 150px" type="submit" @click="submitAccept()">ยืนยันการตัดโอน</v-btn>
                             <v-spacer></v-spacer>
                         </v-card-actions>
                     </v-form>

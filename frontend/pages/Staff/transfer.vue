@@ -130,7 +130,7 @@
                   style="width: 150px"
                   type="submit"
                   @click="submitAccept()"
-                  >ยืนยันการรับเข้า</v-btn
+                  >ยืนยันการตัดโอน</v-btn
                 >
                 <v-spacer></v-spacer>
               </v-card-actions>
