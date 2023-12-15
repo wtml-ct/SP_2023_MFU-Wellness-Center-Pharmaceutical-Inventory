@@ -17,7 +17,8 @@ Items.getAll = result => {
     FROM public.items,public.units,public.types,public.conditions 
     WHERE items.unit_id = units.unit_id 
     AND items.type_id = types.type_id 
-    AND items.condition_id = conditions.condition_id`, (err, res) => {
+    AND items.condition_id = conditions.condition_id
+    ORDER BY items.item_id ASC;`, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -57,7 +58,8 @@ Items.findByItemName = (id, result) => {
     WHERE items.unit_id = units.unit_id 
     AND items.type_id = types.type_id 
     AND items.condition_id = conditions.condition_id 
-    AND items.item_name = '${id}'`, (err, res) => {
+    AND items.item_name = '${id}'
+    ORDER BY items.item_id ASC;`, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -79,7 +81,8 @@ Items.findByTypeId = (id, result) => {
     FROM public.items, public.units, public.types, public.conditions 
     WHERE items.unit_id = units.unit_id AND items.type_id = types.type_id 
     AND items.condition_id = conditions.condition_id 
-    AND items.type_id = ${id}`, (err, res) => {
+    AND items.type_id = ${id}
+    ORDER BY items.item_id ASC;`, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);

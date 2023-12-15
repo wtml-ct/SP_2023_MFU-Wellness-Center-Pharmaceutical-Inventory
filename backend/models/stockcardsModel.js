@@ -155,52 +155,38 @@ Stockcards.findByItemID = (id, result) => {
 Stockcards.findOutstock = result => {
     dbConn.query(`
     SELECT
-    subquery.*,
-    CASE 
-    WHEN subquery.days_until_expire <= 90 AND subquery.days_until_expire > 0 AND subquery.condition_id = 1 THEN 1
-    WHEN subquery.days_until_expire <= 90 AND subquery.days_until_expire > 0 AND subquery.condition_id = 2 THEN 1
-    WHEN subquery.days_until_expire <= 60 AND subquery.days_until_expire > 0 AND subquery.condition_id = 3 THEN 1
-    WHEN subquery.days_until_expire <= 30 AND subquery.days_until_expire > 0 AND subquery.condition_id = 4 THEN 1
-    WHEN subquery.days_until_expire >= 90 AND subquery.condition_id = 1 THEN 0
-    WHEN subquery.days_until_expire >= 90 AND subquery.condition_id = 2 THEN 0
-    WHEN subquery.days_until_expire >= 60 AND subquery.condition_id = 3 THEN 0
-    WHEN subquery.days_until_expire >= 30 AND subquery.condition_id = 4 THEN 0	
-    ELSE 2
-END AS expire_status
-FROM
-(
-    SELECT
-    items.*,
-    units.unit_name,
-    types.type_name,
-
-    ( stockcards.sc_exp :: DATE - CURRENT_DATE ) AS days_until_expire,
-    COALESCE (
-    SUM ( CASE WHEN stockcards.sc_id LIKE'IM%' THEN stockcards.sc_balance ELSE 0 END ) - SUM ( CASE WHEN stockcards.sc_id LIKE'TF%' THEN stockcards.sc_balance ELSE 0 END ),
-    0 
-    ) AS total_balance,
-CASE
-        WHEN COALESCE (
+        subquery.*
+    FROM
+    (
+        SELECT
+        items.*,
+        units.unit_name,
+        types.type_name,
+        COALESCE (
         SUM ( CASE WHEN stockcards.sc_id LIKE'IM%' THEN stockcards.sc_balance ELSE 0 END ) - SUM ( CASE WHEN stockcards.sc_id LIKE'TF%' THEN stockcards.sc_balance ELSE 0 END ),
         0 
-        ) <= items.item_min THEN
-        1 ELSE 0 
-    END AS input_status 
-FROM
-    PUBLIC.items
-    JOIN PUBLIC.stockcards ON items.item_id = stockcards.item_id
-    JOIN PUBLIC.units ON units.unit_id = items.unit_id
-    JOIN PUBLIC.types ON types.type_id = items.type_id
-    JOIN PUBLIC.conditions ON items.condition_id = conditions.condition_id 
-WHERE
-    stockcards.status_id = 1 
-GROUP BY
-    items.item_id,
-    items.item_min,
-    units.unit_name,
-    types.type_name,
-            stockcards.sc_exp
-    ) AS subquery							
+        ) AS total_balance,
+    CASE
+            WHEN COALESCE (
+            SUM ( CASE WHEN stockcards.sc_id LIKE'IM%' THEN stockcards.sc_balance ELSE 0 END ) - SUM ( CASE WHEN stockcards.sc_id LIKE'TF%' THEN stockcards.sc_balance ELSE 0 END ),
+            0 
+            ) <= items.item_min THEN
+            1 ELSE 0 
+        END AS input_status 
+    FROM
+        PUBLIC.items
+        JOIN PUBLIC.stockcards ON items.item_id = stockcards.item_id
+        JOIN PUBLIC.units ON units.unit_id = items.unit_id
+        JOIN PUBLIC.types ON types.type_id = items.type_id
+        JOIN PUBLIC.conditions ON items.condition_id = conditions.condition_id 
+    WHERE
+        stockcards.status_id = 1 
+    GROUP BY
+        items.item_id,
+        items.item_min,
+        units.unit_name,
+        types.type_name
+        ) AS subquery			
 `, (err, res) => {
         if (err) {
             console.log("error: ", err);
@@ -583,6 +569,35 @@ Stockcards.findHistotybywh = (wh, result) => {
         (stockcards.from_warehouse = '${wh}' AND stockcards.sc_id LIKE 'TF%')
     ORDER BY
     stockcards.timestamp ASC;
+`, (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(err, null);
+            return;
+        }
+        console.log("count", res.rowCount);
+        if (res.rowCount) {
+            result(null, res.rows);
+            return;
+        }
+        result({ type: "not_found" }, null);
+    });
+};
+// find balance exchange
+Stockcards.findinBalanceExchange = ({wh,id,lot,exp}, result) => {
+    console.log(wh);
+    dbConn.query(`
+    SELECT  
+        stockcards.* 
+    FROM 
+        public.stockcards
+    WHERE
+        stockcards.item_id = '${id}'
+        AND stockcards.sc_lot = '${lot}'
+        AND stockcards.sc_exp = '${exp}'
+        AND stockcards.from_warehouse = '${wh}'
+    ORDER BY
+        stockcards.sc_lot
 `, (err, res) => {
         if (err) {
             console.log("error: ", err);

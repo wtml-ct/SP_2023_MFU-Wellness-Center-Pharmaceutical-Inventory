@@ -363,12 +363,15 @@ export default {
                 await this.$axios
                     .get("/api/items/findByTypeID/1")
                     .then((res) => {
+                        console.log(res.data.length);
                         var index = res.data.length - 1;
                         var info = res.data[index].item_id;
+                        console.log(info);
                         var info_1 = parseInt(info);
                         var new_1 = info_1 + 1;
                         var new_s = new_1.toString();
                         this.editedItem.item_id = new_s;
+                        console.log(new_s);
                     })
                     .catch((err) => {
                         this.editedItem.item_id = "200000000";

@@ -474,7 +474,7 @@ export default {
             this.editedItem.username = this.$auth.user.username;
             this.editedItem.action_id = 3;
             this.editedItem.status_id = 0;
-            this.editedItem.item_id = this.product[0].item_id;
+            this.editedItem.item_id = this.editedItem.item_id;
             this.editedItem.sc_po = this.product[0].sc_po;
             this.editedItem.sc_delivery = this.product[0].sc_delivery;
 
@@ -621,10 +621,11 @@ export default {
             this.editedItem.username = this.$auth.user.username;
 
             this.editedItem.status_id = 0;
-            this.editedItem.sc_po = this.product[0].sc_po;
-            this.editedItem.sc_delivery = this.product[0].sc_delivery;
+            this.editedItem.sc_po = this.exp[0].sc_po;
+            this.editedItem.sc_delivery = this.exp[0].sc_delivery;
             this.wh_from = this.wh_from.warehouse_id;
             this.wh_to = this.wh_to.warehouse_id;
+            this.editedItem.sc_price = this.exp[0].sc_price;
 
             console.log(this.wh_to);
 

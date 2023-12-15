@@ -110,6 +110,33 @@ async findinStockBalance(req, res, next) {
         }
     });
 }
+
+
+// findinBalanceExchange
+async findinBalanceExchange(req, res, next) {
+    var wh = req.params.wh;
+    var id = req.params.item_id;
+    var lot = req.params.sc_lot;
+    var exp = req.params.sc_exp;
+    console.log(`Start get ${tableName} by wh with wh: ${wh} `);
+    Model.findinBalanceExchange({wh,id,lot,exp}, (err, data) => {
+        if (err) {
+            var errStr = "";
+            var errStatus = 500;
+            if (err.type === "not_found") {
+                errStr = `Not found ${tableName} with wh: ${wh} ไม่มีข้อมูล`;
+                errStatus = 404;
+            } else {
+                errStr = `Error retrieving ${tableName} with  wh: ${wh}`;
+            }
+            console.log(`Get ${tableName} by id failed: ${errStr}`);
+            res.status(errStatus).send({ message: errStr });
+        } else {
+            console.log(`Get ${tableName} by id successful , wh: ${wh}`)
+            res.send(data);
+        }
+    });
+}
   //findinStock
   async findinStock(req, res, next) {
     var wh = req.params.wh;

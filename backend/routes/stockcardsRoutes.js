@@ -12,6 +12,8 @@ stockcardsRouter.get("/findByItemID/:item_id", stockcards.findByItemID);
 stockcardsRouter.get("/findByItemIDandLot/:item_id/:sc_lot", stockcards.findByItemIDandLot);
 stockcardsRouter.get("/findByItemIDandLotandExp/:item_id/:sc_lot/:sc_exp", stockcards.findByItemIDandLot);
 stockcardsRouter.get("/findinStockBalance/:wh/:item_id/:sc_lot/:sc_exp", stockcards.findinStockBalance);
+stockcardsRouter.get("/findinBalanceExchange/:wh/:item_id/:sc_lot/:sc_exp", stockcards.findinBalanceExchange);
+
 
 stockcardsRouter.get("/findOutstock", stockcards.findOutstock);
 stockcardsRouter.get("/findExpire", stockcards.findExpire);

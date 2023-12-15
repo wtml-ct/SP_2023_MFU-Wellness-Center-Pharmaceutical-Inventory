@@ -537,6 +537,7 @@ export default {
                     this.editedItem.sc_id = "IM10000001";
                 }
             });
+            this.initialize();
         },
         getStatusClass(item) {
             return item.status_id === 1 ? "success" : "warning";
@@ -572,20 +573,8 @@ export default {
                 const index = this.product.length - 1;
                 const info = this.product[index].sc_id;
                 console.log("info", info);
-                // // Extract letters (characters) from the beginning of the string
-                // const letters = info.match(/[A-Za-z]+/)[0];
-                // // Extract numbers from the string
-                // const numbers = parseInt(info.match(/\d+/)[0],10);
-                // const newid = numbers + 1;
-                // const newid2 = String(newid);
-                // const number = newid2.padStart(8,'0')
-                // const id = letters + number;
-                // console.log(id);
-
                 // slice(start, end)
                 const numbers = parseInt(info.slice(2, 10)) + 1;
-
-                console.log("n", numbers);
                 const numbersString = String(numbers);
                 const new_id = info.slice(0, 2) + numbersString.padStart(8, "0");
                 console.log(new_id);
@@ -614,10 +603,6 @@ export default {
                     this.form.type_name = res.data.type_name;
                     this.form.unit_name = res.data.unit_name;
                 });
-        },
-        resetForm() {
-            this.errorMessages = [];
-            this.formHasErrors = false;
         },
         submitAccept() {
             this.$axios.put("/api/stockcards/", {

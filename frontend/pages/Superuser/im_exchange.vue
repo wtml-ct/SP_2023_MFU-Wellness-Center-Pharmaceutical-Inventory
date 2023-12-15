@@ -620,7 +620,6 @@ export default {
             itemold: [],
             itemlot: [],
             exp: ["กรุณาเลือกล็อตที่นำไปเเลกเปลี่ยน"],
-            balance: ["กรุณาเลือกล็อตเเละวันที่หมดอายุ"],
             unit: [],
             type: [],
             from_wh: [],
@@ -772,27 +771,12 @@ export default {
         },
         onBalancebyExp() {
             // Find balance
-            // this.$axios
-            //   .get(
-            //     `/api/stockcards/findByItemIDandLotandExp/${this.editedItem.item_old}/${this.editedItem.item_lot_old}/${this.editedItem.item_exp_old}`
-            //   )
-            //   .then((res) => {
-            //     this.balance = res.data;
-            //     console.log(this.balance);
-            //     this.form.balance_old = res.data[0].sc_balance;
-            //   });
-            // Find balance
             this.$axios
                 .get(
-                    `/api/stockcards/findinStockBalance/1008/${this.editedItem.item_old}/${this.editedItem.item_lot_old}/${this.editedItem.item_exp_old}`
+                    `/api/stockcards/findinBalanceExchange/1008/${this.editedItem.item_old}/${this.editedItem.item_lot_old}/${this.editedItem.item_exp_old}`
                 )
                 .then((res) => {
-                    this.editedItem.sc_balance_old = res.data[0].total_balance;
-                    this.balance = res.data;
-                    console.log("1111111111", res.data[0].to_warehouse);
-                    console.log("1111111111", this.balance);
-                    console.log("1111111111", this.editedItem.sc_balance_old);
-
+                    this.editedItem.sc_balance_old = res.data[0].sc_balance;
                 });
         },
         async onItemIDOld() {
@@ -808,8 +792,13 @@ export default {
                     this.$axios
                         .get("/api/stockcards/findByItemID/" + this.editedItem.item_old)
                         .then((res) => {
-                            this.itemlot = res.data;
+                            this.itemlot = res.data.filter(
+                                (itemlot) =>
+                                itemlot.action_id == "5"
+                            );
                             console.log("lot", this.itemlot);
+                        }).catch((e) => {
+                            this.itemlot = ["ไม่มีล็อต"];
                         });
                 });
             this.form.exp_old = "";
@@ -839,10 +828,12 @@ export default {
                     this.$axios
                         .get("/api/stockcards/findByItemID/" + this.editedItem.item_old)
                         .then((res) => {
-                            this.itemlot = res.data;
+                            this.itemlot = res.data.filter(
+                                (itemlot) =>
+                                itemlot.action_id == "5"
+                            );
                             console.log("lot", this.itemlot);
-                        })
-                        .catch((e) => {
+                        }).catch((e) => {
                             this.itemlot = ["ไม่มีล็อต"];
                         });
                 });

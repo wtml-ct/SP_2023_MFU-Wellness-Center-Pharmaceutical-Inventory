@@ -137,7 +137,7 @@ export default {
     },
     async initialize() {
       this.$axios.get("/api/stockcards/findOutstock").then((res) => {
-        this.product = res.data.filter((item) => item.input_status === 1 && item.expire_status === 0 );
+        this.product = res.data.filter((item) => item.input_status === 1);
         console.log(this.product);
         this.total = this.product.length;
       });
